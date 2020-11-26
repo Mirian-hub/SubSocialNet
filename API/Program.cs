@@ -25,14 +25,14 @@ namespace API
               {
                 var context = services.GetRequiredService<DataContext>();
                 context.Database.Migrate();
+                Ceed.SeedVoid(context);
               }
               catch(Exception ex)
               {
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError(ex, "Erro Occuered During Migration");
               }
-            }
-             
+            }             
             host.Run();
         } 
 
