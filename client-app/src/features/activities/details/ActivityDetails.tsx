@@ -1,13 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button, ButtonGroup, Card, Icon, Image } from 'semantic-ui-react'
-import { IActivity } from '../../../app/models/activity'
+import {observer} from 'mobx-react-lite'
+import ActivityStore from '../../../app/stores/activityStore'
 
-interface IProps  {
-    selectedActivity: IActivity | null,
-    setEditMode: (state: Boolean)=> void,
-}
-
-export const ActivityDetails: React.FC<IProps> = ({selectedActivity, setEditMode}) => {
+const ActivityDetails: React.FC = () => {
+    const {selectedActivity, setEditMode} = useContext(ActivityStore) 
     return (
         <Card fluid>
             <Image src= {`/assets/categoryImages/${selectedActivity?.category}.jpg`} wrapped ui={false} />
@@ -22,10 +19,13 @@ export const ActivityDetails: React.FC<IProps> = ({selectedActivity, setEditMode
             </Card.Content>
             <Card.Content extra>
               <ButtonGroup widths={2}> 
-                  <Button content="Edit" color='blue' basic onClick={()=> setEditMode(true)} />
+                  <Button content="Edit" color='blue' basic onClick={()=> setEditMode(true) } />
                   <Button content="Cancel" color='brown' basic onClick={()=> setEditMode(false)}/>
               </ButtonGroup>
             </Card.Content>
         </Card>
     )
 }
+
+export default observer(ActivityDetails);
+

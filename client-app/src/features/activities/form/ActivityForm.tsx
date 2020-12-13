@@ -1,27 +1,15 @@
-import React, { EventHandler, useEffect, useState } from 'react';
-import { Interface } from 'readline';
+import React, { EventHandler, useContext, useEffect, useState } from 'react';
 import { Button, Form, Segment } from 'semantic-ui-react';
 import { IActivity } from '../../../app/models/activity';
 import {v4 as uuid} from 'uuid';
-interface IProps {
-  selectedActivity: IActivity | null;
-  setCreatMode: (state: Boolean) => void;
-  setEditMode: (state: Boolean) => void;
-  addActivityHandler: (activity: IActivity) => void;
-  editActivityHandler: (activity: IActivity) => void;
-}
+import {observer} from 'mobx-react-lite'
+import ActivityStore from '../../../app/stores/activityStore'
 
-export const ActivityForm: React.FC<IProps> = ({
-  selectedActivity,
-  setCreatMode,
-  setEditMode,
-  addActivityHandler,
-  editActivityHandler,
-}) => {
-  // debugger
+ const ActivityForm: React.FC = () => {
+  const store = useContext(ActivityStore)
 
-  const currentActivity = selectedActivity
-    ? selectedActivity
+  const currentActivity = store.selectedActivity
+    ? store.selectedActivity
     : {
         id: '',
         title: '',
@@ -35,19 +23,17 @@ export const ActivityForm: React.FC<IProps> = ({
 
   useEffect(() => {
     setActivity(currentActivity);
-  }, [selectedActivity]);
+  }, [store.selectedActivity]);
 
   const formSubmitHandler = () => {
     if (activity.id.length > 0) {
-      editActivityHandler(activity);
+      store.editActivityHandler(activity);
     } else {
         let newActivity = {
             ...activity,
             id: uuid()
         }
-      addActivityHandler(newActivity);
-      debugger;
-
+        store.addActivityHandler(newActivity);
     }
   };
 
@@ -97,14 +83,12 @@ export const ActivityForm: React.FC<IProps> = ({
           name="venue"
           value={activity.venue}
         />
-        <Button
+        <Button loading={store.subbmiting}
           floated="right"
           positive
           type="submit"
           content="submit"
           onClick={() => {
-            setCreatMode(false);
-            setEditMode(false);
             formSubmitHandler();
           }}
         />
@@ -113,11 +97,12 @@ export const ActivityForm: React.FC<IProps> = ({
           type="button"
           content="cancel"
           onClick={() => {
-            setCreatMode(false);
-            setEditMode(false);
+            store.setCreatMode(false);
+            store.setEditMode(false);
           }}
         />
       </Form>
     </Segment>
   );
 };
+export default observer(ActivityForm);

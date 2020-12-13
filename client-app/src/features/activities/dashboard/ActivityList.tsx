@@ -1,23 +1,20 @@
-import React from 'react'
+import { observer } from 'mobx-react-lite'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Item, Label, Segment } from 'semantic-ui-react'
 import { IActivity } from '../../../app/models/activity'
-
-interface IProps {
-  activities:IActivity[],
-  selectActivityHandler: (id: string)=> void,
-  deleteActivityhandler: (id: string)=> void
-}
+import ActivityStore from '../../../app/stores/activityStore'
 
 
-export const ActivityList: React.FC<IProps> = ({activities, selectActivityHandler, deleteActivityhandler}) => {
-    const onViewClick = (activityId: any)=>{
-          selectActivityHandler(activityId);
-    }
+ const ActivityList: React.FC = () => {
+       
+   const store = useContext(ActivityStore);
+   const {activitiesByDate, selectActivityHandler,deleteActivityhandler }= store
+
     return (
-        <Segment clearing>
+        <Segment clearing loading={store.loading}>
             <Item.Group divided>
-                {activities.map((activity)=> (
-                <Item>
+                {activitiesByDate.map((activity)=> (
+                <Item key={activity.id}>
                     <Item.Content>
                         <Item.Header as='a'> {activity.title}  </Item.Header>
                         <Item.Meta> {activity.date} </Item.Meta>
@@ -26,7 +23,7 @@ export const ActivityList: React.FC<IProps> = ({activities, selectActivityHandle
                             <div>{activity.city} </div> 
                         </Item.Description>
                         <Item.Extra>
-                        <Button floated='right' content='view' color='blue' onClick ={()=> onViewClick(activity.id)}/>
+                        <Button floated='right' content='view' color='blue' onClick = {()=> selectActivityHandler(activity.id)}  />
                         <Button floated='right' content='delete' color='red' onClick ={()=> deleteActivityhandler(activity.id)}/>
                         <Label basic content={activity.category} />
                         </Item.Extra>
@@ -37,3 +34,5 @@ export const ActivityList: React.FC<IProps> = ({activities, selectActivityHandle
          </Segment>
     )
 }
+
+export default observer(ActivityList)
