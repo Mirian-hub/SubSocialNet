@@ -13,17 +13,10 @@ import ActivityStore from '../../../app/stores/activityStore';
   return (
     <Grid>
       <Grid.Column width={10}>
-        {
-          <ActivityList/>
-        }
-      </Grid.Column>
+        <ActivityList/>  
+      </Grid.Column>      
       <Grid.Column width={6}>
-        {selectedActivity && !createMode && (
-          <ActivityDetails/>
-        )}
-        {(createMode || editMode) && (
-          <ActivityForm/>
-        )}
+        Activity Filtes
       </Grid.Column>
     </Grid>
   );
