@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 const  ScrollToTop = ({children, location: {pathname}}: any) => {
 
   useEffect(() => {
-      debugger
     window.scrollTo(0, 0);
   }, [pathname]);
 

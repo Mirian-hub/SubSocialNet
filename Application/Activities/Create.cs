@@ -1,10 +1,14 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
+ 
 namespace Application.Activities
 {
     public class Create
@@ -22,6 +26,18 @@ namespace Application.Activities
             public string Venue { get; set; }
         }
 
+        public class CommandValidator: AbstractValidator<Command> {
+            public CommandValidator()
+            {
+                RuleFor(x=>x.Id).NotEmpty();
+                RuleFor(x=>x.Category).NotEmpty();
+                RuleFor(x=>x.City).NotEmpty();
+                RuleFor(x=>x.Venue).NotEmpty();
+                RuleFor(x=>x.Title).NotEmpty();
+                RuleFor(x=>x.Description).NotEmpty();
+                RuleFor(x=>x.Date).NotEmpty();
+            }
+        } 
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
@@ -45,7 +61,7 @@ namespace Application.Activities
                 _context.Activities.Add(activity);
                  var success = await _context.SaveChangesAsync()>0;
                  if(success) return Unit.Value;
-                 throw new Exception("Problem while adding new activity");
+                 throw new RestException(HttpStatusCode.InternalServerError, "Error whilhe creating new Activity");
             }
         }
     }

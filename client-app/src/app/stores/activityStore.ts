@@ -4,6 +4,7 @@ import { REPL_MODE_STRICT } from 'repl';
 import Activities from '../api/agent';
 import { IActivity } from '../models/activity';
 
+
 configure({enforceActions: 'always'});
 
 
@@ -41,9 +42,8 @@ class ActivityStore {
                 this.activityRegistry.set(activity.id, activity);
               });
           });
-          console.log(this.groupActivitiesBydate(response));       
       } )
-      .catch((error) => console.log(error))
+      .catch((error) => {throw(error)})
       .finally(() => {
           runInAction(() => {
             this.loading = false;
@@ -63,7 +63,10 @@ class ActivityStore {
         runInAction(()=> {
           this.selectedActivity = response
         })
-      }).finally(()=> {
+      }).catch((error)=> {
+        throw(error)
+      })
+      .finally(()=> {
         runInAction(()=> {
         this.loading = false
       })

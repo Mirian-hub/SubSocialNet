@@ -25,7 +25,6 @@ const ActivityForm = (props: any) => {
   });
 
   useEffect(() => {
-    debugger;
     if (
       props.match.params.id &&
       props.match.params.id.length > 15 &&
@@ -33,10 +32,9 @@ const ActivityForm = (props: any) => {
     ) {
       store.getActivity(props.match.params.id).then(() => {
         store.selectedActivity && setActivity(store.selectedActivity);
-      });
+      }).catch(()=> {props.history.push('/notFound'); console.log('error in getActivity')});
     }
     if (store.selectedActivity) {
-      debugger;
       return () => {
         store.clearSelectedActivity();
       };
@@ -49,14 +47,12 @@ const ActivityForm = (props: any) => {
   ]);
 
   const formSubmitHandler = () => {
-    debugger;
     if (activity.id.length > 15) {
       store.editActivityHandler(activity).then(() => {
         props.history.goBack();
         props.history.push(`activities/${activity.id}`);
       });
     } else {
-      debugger;
       let newActivity = {
         ...activity,
         id: uuid(),

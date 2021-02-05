@@ -1,11 +1,25 @@
-import Axios, { AxiosResponse } from 'axios';
-import axios from 'axios'
-import { StrictGridColumnProps } from 'semantic-ui-react';
+import axios, { AxiosResponse } from 'axios';
 import { IActivity } from '../models/activity';
+import {history} from '../../'
+import {toast} from 'react-toastify'
 
 axios.defaults.baseURL='http://localhost:5000/api/';
+axios.interceptors.response.use(res=> res, 
+    exception => { 
+        if(exception.response && exception.response.status == 400)
+         {
+             history.push('/notfount')
+         }
 
-const respondBody = (response: AxiosResponse) => response.data;
+         if(exception.response && exception.response.status == 404){
+            history.push('/notfound')
+         }
+         if(exception.response.status == 500)
+         {
+             toast.error('Server Error! for more info see console ')
+         }
+    })
+const respondBody = (response: AxiosResponse) => response && response.data;
 
 const sleep = (ms: number) => (response: AxiosResponse)=>  
     new Promise<AxiosResponse>(resolve=> setTimeout(()=>resolve(response), ms));
